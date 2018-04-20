@@ -32,6 +32,17 @@ def find_afterparties():
     distance = request.args.get('distance')
     measurement = request.args.get('measurement')
     sort = request.args.get('sort')
+    dis = distance + measurement
+
+    # Make calls to Eventbrite API
+    eb_token = os.environ['EVENTBRITE_TOKEN']
+    eb_key = os.environ['EVENTBRITE_KEY']
+    eb_secret = os.environ['EVENTBRITE_SECRET']
+    payload = {"token" : eb_token, "q" : query, "sort_by" : sort, "location.address" : location, "location.within": dis}
+
+    response = requests.get("https://www.eventbriteapi.com/v3/events/search/" , params=payload)
+    search_data = response.json()
+    #print "New Search:", search_data[0]
 
     # If the required information is in the request, look for afterparties
     if location and distance and measurement:
